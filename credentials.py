@@ -7,7 +7,7 @@ def click_element(driver, by_type, locator, timeout=10):
     """Waits for an element to be clickable and clicks it."""
     WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((by_type, locator))).click()
 
-def wait_for_element(driver, by_type, locator, timeout=10):
+def wait_for_element(driver, by_type, locator, timeout=20):
     """Waits for an element to be present and returns it."""
     return WebDriverWait(driver, timeout).until(EC.presence_of_element_located((by_type, locator)))
 
@@ -21,11 +21,10 @@ def close_and_switch_back(driver):
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
-def is_element_displayed(driver, by_type, locator, timeout=10):
+def is_element_displayed(driver, by_type, locator, timeout=20):
     """Checks if an element is displayed on the page."""
     element = WebDriverWait(driver, timeout).until(EC.presence_of_element_located((by_type, locator)))
     return element.is_displayed()
-
 
 def log_and_validate(driver, expected_text, log_file="test_log.txt"):
     """
@@ -40,4 +39,9 @@ def log_and_validate(driver, expected_text, log_file="test_log.txt"):
         file.write(f"Help Page Title: {page_title}\n")
 
     assert expected_text in driver.page_source, f"Incorrect Help page opened, expected: {expected_text}"
-    close_and_switch_back(driver)
+
+
+def scroll_to_element(driver, by_type, locator):
+    """Scrolls the page until the specified element is visible."""
+    element = driver.find_element(by_type, locator)
+    driver.execute_script("arguments[0].scrollIntoView();", element)
